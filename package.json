@@ -16,13 +16,16 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check:functions": "deno check supabase/functions/fetch-gold-prices/index.ts"
+    "check:functions": "deno check supabase/functions/fetch-gold-prices/index.ts supabase/functions/add-family-member/index.ts"
   },
   "dependencies": {
     "@fontsource-variable/manrope": "^5.3.0",
     "@fontsource/ibm-plex-mono": "^5.3.0",
     "@supabase/supabase-js": "^2.119.0",
+    "@tanstack/query-async-storage-persister": "^5.107.1",
     "@tanstack/react-query": "^5.107.1",
+    "@tanstack/react-query-persist-client": "^5.107.1",
+    "idb-keyval": "^6.3.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-router": "^8.5.1"

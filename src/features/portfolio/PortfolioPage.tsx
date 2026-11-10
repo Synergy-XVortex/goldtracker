@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react'
+import { Link } from 'react-router'
 import { Page } from '../../components/AppShell'
 import { StateMessage } from '../../components/StateMessage'
 import {
@@ -41,6 +43,7 @@ export function PortfolioPage() {
     )
   }
 
+  const isAdmin = view.data.role === 'admin'
   const productLabels = new Map(view.prices.map(({ product }) => [product.id, product.label]))
   const names = new Map(
     view.data.participants.map((participant) => [participant.id, participant.displayName]),
@@ -49,110 +52,153 @@ export function PortfolioPage() {
 
   return (
     <Page title="Portefeuille">
-      <section
-        className="flex flex-col gap-3 rounded-card border border-surface-line bg-surface p-4"
-        aria-label="Synthèse"
-      >
-        <div className="flex items-end justify-between gap-3">
-          <div>
-            <p className="text-xs text-muted">Or détenu</p>
-            <p className="font-mono font-semibold tabular-nums">{formatGrams(view.total.grams)}</p>
-          </div>
-          <div className="text-right">
-            <p className="text-xs text-muted">Plus-value</p>
-            <p
-              className={`font-mono font-semibold tabular-nums ${view.total.gainCents >= 0 ? 'text-gain' : 'text-loss'}`}
-            >
-              {formatSignedEuros(view.total.gainCents)}
-            </p>
-          </div>
-        </div>
-        <div className="flex h-1.5 overflow-hidden rounded-full bg-chip" aria-hidden="true">
-          {view.participants.map((participant, index) => (
-            <span
-              key={participant.id}
-              style={{
-                width: `${(participant.holding.grams / view.total.grams) * 100}%`,
-                background: shade(index),
-              }}
-            />
-          ))}
-        </div>
-        <p className="text-xs text-muted">
-          Répartition du poids entre {view.participants.length} participants
-        </p>
-      </section>
-
-      <section
-        aria-label="Participants"
-        className="rounded-card border border-surface-line bg-surface px-4"
-      >
-        <ul className="divide-y divide-line">
-          {view.participants.map((participant, index) => {
-            const { holding } = participant
-            const isGain = holding.gainCents >= 0
-            const isOwn = participant.id === view.data.ownParticipantId
-            return (
-              <li
-                key={participant.id}
-                className="grid grid-cols-[2rem_1fr_auto] items-center gap-3 py-3"
-              >
-                <span
-                  className="grid size-8 place-items-center rounded-full bg-chip text-xs font-bold"
-                  style={{ boxShadow: `inset 0 0 0 2px ${shade(index)}` }}
-                  aria-hidden="true"
-                >
-                  {participant.displayName.slice(0, 1)}
-                </span>
-                <div className="min-w-0">
-                  <p className="font-semibold">
-                    {participant.displayName}
-                    {isOwn && <span className="ml-1.5 text-xs font-normal text-muted">(vous)</span>}
-                  </p>
-                  <p className="text-xs text-muted">
-                    {formatGrams(holding.grams)} · investi{' '}
-                    <span className="font-mono">{formatEuros(holding.investedCents)}</span>
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="font-mono text-sm font-semibold tabular-nums">
-                    {formatEuros(holding.valueCents)}
-                  </p>
-                  <p
-                    className={`font-mono text-xs tabular-nums ${isGain ? 'text-gain' : 'text-loss'}`}
-                  >
-                    {formatSignedEuros(holding.gainCents)}
-                    {holding.gainRatio !== null && <> · {formatSignedPercent(holding.gainRatio)}</>}
-                  </p>
-                </div>
-              </li>
-            )
-          })}
-        </ul>
-      </section>
-
-      <section aria-labelledby="purchases-title" className="flex flex-col gap-2 pb-4">
-        <h2 id="purchases-title" className="text-sm font-bold">
-          Achats <span className="font-normal text-muted">({view.data.purchases.length})</span>
-        </h2>
-        <ul className="divide-y divide-line rounded-card border border-surface-line bg-surface px-4">
-          {view.data.purchases.map((purchase) => (
-            <li key={purchase.id} className="flex items-start justify-between gap-3 py-2.5 text-sm">
-              <div className="min-w-0">
-                <p className="font-semibold">
-                  {purchase.quantity > 1 && `${purchase.quantity} × `}
-                  {productLabels.get(purchase.productId) ?? 'Produit'}
-                </p>
-                <p className="text-xs text-muted">
-                  {formatDate(purchase.purchasedOn)} ·{' '}
-                  {purchase.shares.map((share) => names.get(share.participantId) ?? '?').join(', ')}
+      <div className="grid gap-4 md:grid-cols-2 md:items-start md:gap-8">
+        <div className="flex min-w-0 flex-col gap-4">
+          <section
+            className="flex flex-col gap-3 rounded-card border border-surface-line bg-surface p-4"
+            aria-label="Synthèse"
+          >
+            <div className="flex items-end justify-between gap-3">
+              <div>
+                <p className="text-xs text-muted">Or détenu</p>
+                <p className="font-mono font-semibold tabular-nums">
+                  {formatGrams(view.total.grams)}
                 </p>
               </div>
-              <p className="font-mono tabular-nums">{formatEuros(purchase.totalPriceCents)}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
+              <div className="text-right">
+                <p className="text-xs text-muted">Plus-value</p>
+                <p
+                  className={`font-mono font-semibold tabular-nums ${view.total.gainCents >= 0 ? 'text-gain' : 'text-loss'}`}
+                >
+                  {formatSignedEuros(view.total.gainCents)}
+                </p>
+              </div>
+            </div>
+            <div className="flex h-1.5 overflow-hidden rounded-full bg-chip" aria-hidden="true">
+              {view.participants.map((participant, index) => (
+                <span
+                  key={participant.id}
+                  style={{
+                    width: `${(participant.holding.grams / view.total.grams) * 100}%`,
+                    background: shade(index),
+                  }}
+                />
+              ))}
+            </div>
+            <p className="text-xs text-muted">
+              Répartition du poids entre {view.participants.length} participants
+            </p>
+          </section>
+
+          <section
+            aria-label="Participants"
+            className="rounded-card border border-surface-line bg-surface px-4"
+          >
+            <ul className="divide-y divide-line">
+              {view.participants.map((participant, index) => {
+                const { holding } = participant
+                const isGain = holding.gainCents >= 0
+                const isOwn = participant.id === view.data.ownParticipantId
+                return (
+                  <li
+                    key={participant.id}
+                    className="grid grid-cols-[2rem_1fr_auto] items-center gap-3 py-3"
+                  >
+                    <span
+                      className="grid size-8 place-items-center rounded-full bg-chip text-xs font-bold"
+                      style={{ boxShadow: `inset 0 0 0 2px ${shade(index)}` }}
+                      aria-hidden="true"
+                    >
+                      {participant.displayName.slice(0, 1)}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="font-semibold">
+                        {participant.displayName}
+                        {isOwn && (
+                          <span className="ml-1.5 text-xs font-normal text-muted">(vous)</span>
+                        )}
+                      </p>
+                      <p className="text-xs text-muted">
+                        {formatGrams(holding.grams)} · investi{' '}
+                        <span className="font-mono">{formatEuros(holding.investedCents)}</span>
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-mono text-sm font-semibold tabular-nums">
+                        {formatEuros(holding.valueCents)}
+                      </p>
+                      <p
+                        className={`font-mono text-xs tabular-nums ${isGain ? 'text-gain' : 'text-loss'}`}
+                      >
+                        {formatSignedEuros(holding.gainCents)}
+                        {holding.gainRatio !== null && (
+                          <> · {formatSignedPercent(holding.gainRatio)}</>
+                        )}
+                      </p>
+                    </div>
+                  </li>
+                )
+              })}
+            </ul>
+          </section>
+        </div>
+        <section aria-labelledby="purchases-title" className="flex min-w-0 flex-col gap-2 pb-4">
+          <div className="flex items-center justify-between gap-3">
+            <h2 id="purchases-title" className="text-sm font-bold">
+              Achats <span className="font-normal text-muted">({view.data.purchases.length})</span>
+            </h2>
+            {isAdmin && (
+              <Link to="/achats/nouveau" className="text-sm font-semibold text-accent-ink">
+                Ajouter
+              </Link>
+            )}
+          </div>
+          <ul className="divide-y divide-line rounded-card border border-surface-line bg-surface px-4">
+            {view.data.purchases.map((purchase) => (
+              <li key={purchase.id}>
+                <PurchaseRowFrame purchaseId={purchase.id} editable={isAdmin}>
+                  <div className="min-w-0">
+                    <p className="font-semibold">
+                      {purchase.quantity > 1 && `${purchase.quantity} × `}
+                      {productLabels.get(purchase.productId) ?? 'Produit'}
+                    </p>
+                    <p className="text-xs text-muted">
+                      {formatDate(purchase.purchasedOn)} ·{' '}
+                      {purchase.shares
+                        .map((share) => names.get(share.participantId) ?? '?')
+                        .join(', ')}
+                    </p>
+                  </div>
+                  <p className="font-mono tabular-nums">{formatEuros(purchase.totalPriceCents)}</p>
+                </PurchaseRowFrame>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
     </Page>
+  )
+}
+
+/** A purchase row: a link to its edit form for the admin, plain text for members. */
+function PurchaseRowFrame({
+  purchaseId,
+  editable,
+  children,
+}: {
+  purchaseId: string
+  editable: boolean
+  children: ReactNode
+}) {
+  const className = 'flex items-start justify-between gap-3 py-2.5 text-sm'
+  if (!editable) return <div className={className}>{children}</div>
+  return (
+    <Link
+      to={`/achats/${purchaseId}`}
+      aria-label="Modifier cet achat"
+      className={`${className} -mx-2 rounded-control px-2 hover:bg-chip`}
+    >
+      {children}
+    </Link>
   )
 }

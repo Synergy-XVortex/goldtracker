@@ -65,3 +65,8 @@ export function formatDate(isoDate: string): string {
 export function formatMonth(isoDate: string): string {
   return monthFormatter.format(new Date(`${isoDate}T00:00:00Z`))
 }
+
+/** French possessive with elision: "de Clément", "d'Alice", "d'Hugo". */
+export function ofName(name: string): string {
+  return /^[aeiouyhàâéèêëîïôûü]/i.test(name.trim()) ? `d'${name}` : `de ${name}`
+}

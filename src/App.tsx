@@ -1,23 +1,30 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
 import { RouterProvider } from 'react-router/dom'
 import { router } from './app/router'
 import { AuthProvider } from './features/auth/AuthProvider'
 import { ThemeProvider } from './features/theme/ThemeProvider'
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: { retry: 1, refetchOnWindowFocus: false },
-  },
-})
+import {
+  CACHE_MAX_AGE_MS,
+  CACHE_VERSION,
+  queryClient,
+  queryPersister,
+} from './lib/queryPersistence'
 
 export function App() {
   return (
     <ThemeProvider>
-      <QueryClientProvider client={queryClient}>
+      <PersistQueryClientProvider
+        client={queryClient}
+        persistOptions={{
+          persister: queryPersister,
+          maxAge: CACHE_MAX_AGE_MS,
+          buster: CACHE_VERSION,
+        }}
+      >
         <AuthProvider>
           <RouterProvider router={router} />
         </AuthProvider>
-      </QueryClientProvider>
+      </PersistQueryClientProvider>
     </ThemeProvider>
   )
 }

@@ -70,7 +70,10 @@ function readStored(userId: string | undefined): string | null {
 /** Value history of a participant's shares, or of every purchase for the family. */
 export function displayedHistory(
   choice: DisplayedPortfolio,
-  purchases: readonly PortfolioPurchase[],
+  purchases: readonly Pick<
+    PortfolioPurchase,
+    'productId' | 'quantity' | 'purchasedOn' | 'totalPriceCents' | 'shares'
+  >[],
   quotesByProduct: ReadonlyMap<number, readonly DailyQuote[]>,
 ): PortfolioPoint[] {
   const followed = purchases.flatMap((purchase) => {
