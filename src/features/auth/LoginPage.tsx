@@ -111,10 +111,11 @@ export function LoginPage() {
         >
           <p className="text-sm">
             Un e-mail a été envoyé à <strong>{step.email}</strong>. Ouvrez le lien qu'il contient
-            sur cet appareil, ou saisissez le code à {CODE_LENGTH} chiffres.
+            dans ce navigateur. Si l'e-mail affiche un code à {CODE_LENGTH} chiffres, vous pouvez
+            aussi le saisir ci-dessous.
           </p>
           <label htmlFor="login-code" className="flex flex-col gap-1.5 text-sm font-semibold">
-            Code reçu
+            Code reçu (facultatif)
             <input
               id="login-code"
               required
