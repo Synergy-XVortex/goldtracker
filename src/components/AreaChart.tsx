@@ -74,8 +74,11 @@ export function AreaChart({ points, description, height = 120 }: AreaChartProps)
         preserveAspectRatio="none"
         role="img"
         aria-label={description}
-        className="block h-[var(--chart-height)] w-full overflow-visible"
-        style={{ ['--chart-height' as string]: `${height}px` }}
+        className="block h-[var(--chart-height)] w-full overflow-visible md:h-[var(--chart-height-wide)]"
+        style={{
+          ['--chart-height' as string]: `${height}px`,
+          ['--chart-height-wide' as string]: `${Math.round(height * 1.8)}px`,
+        }}
       >
         {[0.25, 0.5, 0.75].map((fraction) => (
           <line

@@ -6,6 +6,7 @@ import {
   formatMonth,
   formatSignedEuros,
   formatSignedPercent,
+  ofName,
 } from './format'
 
 // Intl uses narrow no-break spaces in French output; compare on plain spaces.
@@ -35,5 +36,11 @@ describe('format', () => {
   it('formats calendar dates without time zone shifts', () => {
     expect(formatDate('2026-11-09')).toBe('09/11/2026')
     expect(formatMonth('2024-02-20')).toBe('févr. 24')
+  })
+
+  it('elides "de" before a vowel or a silent h', () => {
+    expect(ofName('Clément')).toBe('de Clément')
+    expect(ofName('Alice')).toBe("d'Alice")
+    expect(ofName('Éric')).toBe("d'Éric")
   })
 })

@@ -12,6 +12,7 @@ import {
   formatGrams,
   formatSignedEuros,
   formatSignedPercent,
+  ofName,
 } from '../../lib/format'
 import { useAuth } from '../auth/AuthProvider'
 import { displayedHistory, useDisplayedPortfolio } from './displayedPortfolio'
@@ -65,7 +66,7 @@ function Dashboard({ view }: { view: PortfolioView }) {
       : undefined
   const holding: Holding = shown?.holding ?? view.total
   const label = shown
-    ? `Portefeuille de ${shown.displayName}`
+    ? `Portefeuille ${ofName(shown.displayName)}`
     : `Portefeuille ${view.data.name.toLowerCase()}`
 
   const history = useMemo(
@@ -76,86 +77,91 @@ function Dashboard({ view }: { view: PortfolioView }) {
 
   return (
     <Page title={own ? `Bonjour ${own.displayName}` : view.data.name}>
-      <section className="flex flex-col gap-2" aria-label={label}>
-        <p className="flex items-center justify-between gap-3 text-xs text-muted">
-          <span>{label}</span>
-          <Link to="/reglages" className="font-semibold text-accent-ink">
-            Changer
-          </Link>
-        </p>
-        <p className="font-mono text-3xl font-semibold tracking-tight tabular-nums">
-          {formatEuros(holding.valueCents)}
-        </p>
-        <p className="flex flex-wrap items-center gap-2 text-xs font-semibold">
-          {holding.gainRatio !== null && (
-            <span
-              className={`rounded-full px-2 py-0.5 font-mono ${isGain ? 'bg-gain-soft text-gain' : 'bg-loss-soft text-loss'}`}
-            >
-              {formatSignedPercent(holding.gainRatio)}
-            </span>
-          )}
-          <span className={`font-mono ${isGain ? 'text-gain' : 'text-loss'}`}>
-            {formatSignedEuros(holding.gainCents)}
-          </span>
-        </p>
-        <p className="text-xs text-muted">
-          sur {formatEuros(holding.investedCents)} investis · {formatGrams(holding.grams)} d'or
-          {view.valuationDate && <> · cotation du {formatDate(view.valuationDate)}</>}
-        </p>
-      </section>
-
-      <SegmentedControl
-        label="Période"
-        name="dashboard-period"
-        options={PERIODS}
-        value={period}
-        onChange={setPeriod}
-        size="small"
-      />
-      <AreaChart
-        points={filterByPeriod(history, period).map((point) => ({
-          date: point.date,
-          value: point.valueCents,
-          baseline: point.investedCents,
-        }))}
-        description={`${label} : valeur comparée au montant investi (pointillés)`}
-      />
-
-      {shown ? (
-        <SummaryLink title={`Toute la ${view.data.name.toLowerCase()}`} holding={view.total} />
-      ) : (
-        own && <SummaryLink title="Votre part" holding={own.holding} />
-      )}
-
-      <div className="grid grid-cols-2 gap-3">
-        {view.prices.map(({ product, quotes }) => {
-          const latest = quotes.at(-1)
-          const change = latestChange(quotes)
-          return (
-            <Link
-              key={product.id}
-              to="/cours"
-              className="flex flex-col gap-1 rounded-card border border-surface-line bg-surface p-3"
-            >
-              <span className="text-xs text-muted">{product.label}</span>
-              <span className="font-mono font-semibold tabular-nums">
-                {latest ? formatEuros(latest.quoteCents) : '—'}
-              </span>
-              {change && (
+      <div className="grid gap-4 md:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)] md:items-start md:gap-8">
+        <div className="flex min-w-0 flex-col gap-4">
+          <section className="flex flex-col gap-2" aria-label={label}>
+            <p className="flex items-center justify-between gap-3 text-xs text-muted">
+              <span>{label}</span>
+              <Link to="/reglages" className="font-semibold text-accent-ink">
+                Changer
+              </Link>
+            </p>
+            <p className="font-mono text-3xl font-semibold tracking-tight tabular-nums">
+              {formatEuros(holding.valueCents)}
+            </p>
+            <p className="flex flex-wrap items-center gap-2 text-xs font-semibold">
+              {holding.gainRatio !== null && (
                 <span
-                  className={`text-xs font-semibold ${change.cents >= 0 ? 'text-gain' : 'text-loss'}`}
+                  className={`rounded-full px-2 py-0.5 font-mono ${isGain ? 'bg-gain-soft text-gain' : 'bg-loss-soft text-loss'}`}
                 >
-                  {change.cents >= 0 ? '▲' : '▼'} {formatSignedPercent(change.ratio)}
+                  {formatSignedPercent(holding.gainRatio)}
                 </span>
               )}
-              {latest && (
-                <span className="text-[10px] text-muted">
-                  Cotation du {formatDate(latest.date)}
-                </span>
-              )}
-            </Link>
-          )
-        })}
+              <span className={`font-mono ${isGain ? 'text-gain' : 'text-loss'}`}>
+                {formatSignedEuros(holding.gainCents)}
+              </span>
+            </p>
+            <p className="text-xs text-muted">
+              sur {formatEuros(holding.investedCents)} investis · {formatGrams(holding.grams)} d'or
+              {view.valuationDate && <> · cotation du {formatDate(view.valuationDate)}</>}
+            </p>
+          </section>
+
+          <SegmentedControl
+            label="Période"
+            name="dashboard-period"
+            options={PERIODS}
+            value={period}
+            onChange={setPeriod}
+            size="small"
+          />
+          <AreaChart
+            points={filterByPeriod(history, period).map((point) => ({
+              date: point.date,
+              value: point.valueCents,
+              baseline: point.investedCents,
+            }))}
+            description={`${label} : valeur comparée au montant investi (pointillés)`}
+          />
+        </div>
+        <div className="flex min-w-0 flex-col gap-4">
+          {shown ? (
+            <SummaryLink title={`Toute la ${view.data.name.toLowerCase()}`} holding={view.total} />
+          ) : (
+            own && <SummaryLink title="Votre part" holding={own.holding} />
+          )}
+
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-1">
+            {view.prices.map(({ product, quotes }) => {
+              const latest = quotes.at(-1)
+              const change = latestChange(quotes)
+              return (
+                <Link
+                  key={product.id}
+                  to="/cours"
+                  className="flex flex-col gap-1 rounded-card border border-surface-line bg-surface p-3"
+                >
+                  <span className="text-xs text-muted">{product.label}</span>
+                  <span className="font-mono font-semibold tabular-nums">
+                    {latest ? formatEuros(latest.quoteCents) : '—'}
+                  </span>
+                  {change && (
+                    <span
+                      className={`text-xs font-semibold ${change.cents >= 0 ? 'text-gain' : 'text-loss'}`}
+                    >
+                      {change.cents >= 0 ? '▲' : '▼'} {formatSignedPercent(change.ratio)}
+                    </span>
+                  )}
+                  {latest && (
+                    <span className="text-[10px] text-muted">
+                      Cotation du {formatDate(latest.date)}
+                    </span>
+                  )}
+                </Link>
+              )
+            })}
+          </div>
+        </div>
       </div>
     </Page>
   )

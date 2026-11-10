@@ -104,6 +104,7 @@ export type Database = {
       portfolio_members: {
         Row: {
           created_at: string
+          email: string | null
           participant_id: string | null
           portfolio_id: string
           role: Database['public']['Enums']['portfolio_role']
@@ -112,6 +113,7 @@ export type Database = {
         ComputedFields: never
         Insert: {
           created_at?: string
+          email?: string | null
           participant_id?: string | null
           portfolio_id: string
           role?: Database['public']['Enums']['portfolio_role']
@@ -119,6 +121,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          email?: string | null
           participant_id?: string | null
           portfolio_id?: string
           role?: Database['public']['Enums']['portfolio_role']
@@ -324,7 +327,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      save_purchase: {
+        Args: {
+          p_fees_cents: number
+          p_note: string
+          p_portfolio_id: string
+          p_product_id: number
+          p_purchase_id: string
+          p_purchased_on: string
+          p_quantity: number
+          p_seller: string
+          p_shares: Json
+          p_total_price_cents: number
+        }
+        Returns: string
+      }
     }
     Enums: {
       portfolio_role: 'admin' | 'member'

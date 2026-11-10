@@ -1,6 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#121315"/>
-  <path d="M150 330 L196 190 H316 L362 330 Z" fill="#d9a63a"/>
-  <path d="M196 190 H316 L304 222 H208 Z" fill="#f0c766"/>
-  <path d="M150 330 L362 330 L350 352 H162 Z" fill="#a8781c"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1932 1932">
+  <!-- Gold bar with an engraved rising chart. Full-bleed background: the OS rounds the corners. -->
+  <rect width="1932" height="1932" fill="#121315"/>
+  <!-- Bar scaled up slightly and centred; it stays inside the 80% safe circle used by Android masks. -->
+  <g transform="translate(966 966) scale(1.08) translate(-986 -980)">
+  <!-- Bottom bevel -->
+  <path d="M390 1282 H1420 L1582 1088 V1112 L1438 1300 Q1428 1316 1408 1316 H408 Q392 1316 390 1300 Z" fill="#8f6a0c"/>
+  <!-- Right face -->
+  <path d="M1305 800 L1436 652 L1582 1088 L1420 1282 Z" fill="#b8860b"/>
+  <!-- Front face -->
+  <path d="M510 800 H1305 L1420 1282 H390 Z" fill="#d6a43a"/>
+  <!-- Top face and its inner rim -->
+  <path d="M510 800 L648 652 Q656 644 668 644 H1420 Q1440 644 1436 652 L1305 800 Z" fill="#f0c766"/>
+  <path d="M568 774 L656 670 H1382 L1294 774 Z" fill="#f6d27a"/>
+  <!-- Engraved chart: a light lip under a dark groove reads as a cut in the metal -->
+  <polyline points="642,1182 765,1050 835,1122 965,982 1050,1068 1150,970" fill="none" stroke="#f0c766" stroke-width="30" stroke-linecap="round" stroke-linejoin="miter" stroke-opacity="0.75"/>
+  <polyline points="642,1165 765,1032 835,1104 965,964 1050,1050 1150,952" fill="none" stroke="#121315" stroke-width="32" stroke-linecap="round" stroke-linejoin="miter"/>
+  <circle cx="1192" cy="912" r="24" fill="#121315"/>
+  </g>
 </svg>
