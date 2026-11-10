@@ -71,7 +71,10 @@ Deno.serve(async (request) => {
   })
   if (writeError) return json({ error: `Could not save the member: ${writeError.message}` }, 500)
 
-  return json({ userId: user.id, accountCreated: user.created, alreadyMember: Boolean(existing) }, 200)
+  return json(
+    { userId: user.id, accountCreated: user.created, alreadyMember: Boolean(existing) },
+    200,
+  )
 })
 
 async function findOrCreateUser(
