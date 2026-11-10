@@ -5,7 +5,9 @@ import { useAuth } from './AuthProvider'
 
 type Step = { name: 'email' } | { name: 'code'; email: string }
 
-const CODE_LENGTH = 6
+// Supabase lets the project choose the code length (this project sends 8 digits).
+const CODE_MIN_LENGTH = 6
+const CODE_MAX_LENGTH = 10
 
 export function LoginPage() {
   const { session } = useAuth()
@@ -111,18 +113,17 @@ export function LoginPage() {
         >
           <p className="text-sm">
             Un e-mail a été envoyé à <strong>{step.email}</strong>. Ouvrez le lien qu'il contient
-            dans ce navigateur. Si l'e-mail affiche un code à {CODE_LENGTH} chiffres, vous pouvez
-            aussi le saisir ci-dessous.
+            dans ce navigateur, ou saisissez ci-dessous le code à chiffres indiqué dans l'e-mail.
           </p>
           <label htmlFor="login-code" className="flex flex-col gap-1.5 text-sm font-semibold">
-            Code reçu (facultatif)
+            Code reçu par e-mail
             <input
               id="login-code"
               required
               autoComplete="one-time-code"
               inputMode="numeric"
-              pattern={`[0-9]{${CODE_LENGTH}}`}
-              maxLength={CODE_LENGTH}
+              pattern={`[0-9]{${CODE_MIN_LENGTH},${CODE_MAX_LENGTH}}`}
+              maxLength={CODE_MAX_LENGTH}
               value={code}
               onChange={(event) => setCode(event.target.value.replace(/\D/g, ''))}
               className="rounded-control border border-control-line bg-surface px-3 py-2.5 font-mono text-lg tracking-[0.3em] outline-accent"
@@ -130,7 +131,7 @@ export function LoginPage() {
           </label>
           <button
             type="submit"
-            disabled={pending || code.length !== CODE_LENGTH}
+            disabled={pending || code.length < CODE_MIN_LENGTH}
             className="rounded-control bg-accent px-4 py-3 font-bold text-on-accent disabled:opacity-60"
           >
             {pending ? 'Vérification…' : 'Se connecter'}
