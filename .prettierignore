@@ -5,3 +5,5 @@ node_modules
 package-lock.json
 supabase/.temp
 supabase/.branches
+# Verbatim page excerpts used as parser fixtures
+supabase/functions/**/fixtures
