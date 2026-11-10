@@ -1,0 +1,15 @@
+{
+  "name": "goldtracker-legacy-import",
+  "private": true,
+  "description": "One-off import of the legacy Google Sheet into Supabase. Kept outside the app's package.json so it never triggers a web deploy.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "import": "node --experimental-strip-types importLegacySheet.ts"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0"
+  }
+}
