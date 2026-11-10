@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Suivi du portefeuille d'or familial et cours quotidiens des lingots."
+    />
+    <meta name="theme-color" content="#fbfbfa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#121315" media="(prefers-color-scheme: dark)" />
+    <title>GoldTracker</title>
+    <script>
+      // Applies the saved theme before the first paint to avoid a flash of the wrong theme.
+      // Must stay in sync with THEME_STORAGE_KEY in src/features/theme/themePreference.ts.
+      ;(function () {
+        var preference = 'system'
+        try {
+          preference = localStorage.getItem('goldtracker.theme') || 'system'
+        } catch (error) {}
+        var prefersDark =
+          window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        var theme =
+          preference === 'dark' || (preference !== 'light' && prefersDark) ? 'dark' : 'light'
+        document.documentElement.dataset.theme = theme
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,86 @@
+@import 'tailwindcss';
+
+/*
+ * Design direction A "Lingot": light and dark palettes.
+ * Every colour is defined once as a CSS variable; the dark theme only redefines them.
+ * The resolved theme is set on <html data-theme="..."> by useThemePreference
+ * (and by the inline script in index.html before the first paint).
+ */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+:root {
+  --gt-bg: #fbfbfa;
+  --gt-surface: #ffffff;
+  --gt-surface-line: #ecebe6;
+  --gt-chip: #f0efeb;
+  --gt-control-line: #e2e1dc;
+  --gt-line: #e9e8e4;
+  --gt-fg: #17181a;
+  --gt-muted: #6d7076;
+  --gt-accent: #b8860b;
+  --gt-accent-ink: #8f6a0c;
+  --gt-on-accent: #ffffff;
+  --gt-gain: #1f7a4d;
+  --gt-gain-soft: #e3f2ea;
+  --gt-loss: #b42318;
+  --gt-loss-soft: #fdecea;
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --gt-bg: #121315;
+  --gt-surface: #1a1b1e;
+  --gt-surface-line: #26282c;
+  --gt-chip: #24262a;
+  --gt-control-line: #303237;
+  --gt-line: #24262a;
+  --gt-fg: #ededeb;
+  --gt-muted: #9a9ca1;
+  --gt-accent: #d9a63a;
+  --gt-accent-ink: #e4b856;
+  --gt-on-accent: #17130a;
+  --gt-gain: #4cc78a;
+  --gt-gain-soft: rgb(76 199 138 / 0.13);
+  --gt-loss: #f97066;
+  --gt-loss-soft: rgb(249 112 102 / 0.13);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--gt-bg);
+  --color-surface: var(--gt-surface);
+  --color-surface-line: var(--gt-surface-line);
+  --color-chip: var(--gt-chip);
+  --color-control-line: var(--gt-control-line);
+  --color-line: var(--gt-line);
+  --color-fg: var(--gt-fg);
+  --color-muted: var(--gt-muted);
+  --color-accent: var(--gt-accent);
+  --color-accent-ink: var(--gt-accent-ink);
+  --color-on-accent: var(--gt-on-accent);
+  --color-gain: var(--gt-gain);
+  --color-gain-soft: var(--gt-gain-soft);
+  --color-loss: var(--gt-loss);
+  --color-loss-soft: var(--gt-loss-soft);
+
+  --font-sans: 'Manrope Variable', 'Segoe UI', system-ui, sans-serif;
+  /* Amounts use a monospaced face so digits line up like on a bank statement. */
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  --radius-card: 14px;
+  --radius-control: 10px;
+}
+
+@layer base {
+  html {
+    background-color: var(--gt-bg);
+  }
+
+  body {
+    min-height: 100dvh;
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+}
