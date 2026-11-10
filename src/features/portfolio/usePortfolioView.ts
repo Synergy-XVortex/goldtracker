@@ -19,6 +19,7 @@ export interface PortfolioView {
   total: Holding
   participants: ParticipantView[]
   history: PortfolioPoint[]
+  quotesByProduct: ReadonlyMap<number, readonly DailyQuote[]>
 }
 
 /** Loads the portfolio and the prices, then values everything with the domain rules. */
@@ -83,5 +84,6 @@ function buildView(data: PortfolioData, prices: ProductPrices[]): PortfolioView 
     total,
     participants,
     history,
+    quotesByProduct,
   }
 }
