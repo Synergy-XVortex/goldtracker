@@ -1,13 +1,18 @@
 version: 2
+# Each merge into main that changes the web app triggers a paid Netlify deploy,
+# so updates are batched: one grouped pull request per ecosystem and per month.
 updates:
   - package-ecosystem: npm
     directory: /
     schedule:
-      interval: weekly
+      interval: monthly
     groups:
-      minor-and-patch:
-        update-types: [minor, patch]
+      npm-dependencies:
+        patterns: ['*']
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: monthly
+    groups:
+      github-actions:
+        patterns: ['*']
